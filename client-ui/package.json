@@ -4,9 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "x-build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "build": "next build && npm run transfer-assets",
+    "transfer-assets": "rm -rfv ../serverless/dist/assets/ && mkdir ../serverless/dist/assets/ && cp -R ./out/* ../serverless/dist/assets/"
   },
   "dependencies": {
     "@twilio-paste/core": "^20.6.0",
