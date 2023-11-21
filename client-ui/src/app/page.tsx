@@ -1,32 +1,32 @@
 "use client";
 
+import { Call, Device } from "@twilio/voice-sdk";
 import { CustomizationProvider } from "@twilio-paste/core/customization";
+import { Alert, Button } from "@twilio-paste/core";
+import { useEffect, useState } from "react";
+
+import { Phase } from "@/types/Phases";
+
+import CallControls from "@/components/CallControls";
 import CenterLayout from "@/components/CenterLayout";
 import MainWidget from "@/components/MainWidget";
-
 import DialPad from "@/components/DialPad";
 import VoiceService from "@/services/VoiceService";
-import { useEffect, useState } from "react";
-import { Phase } from "@/types/Phases";
-import { Alert, Button } from "@twilio-paste/core";
-
-import { Call, Device } from "@twilio/voice-sdk";
-import CallControls from "@/components/CallControls";
 
 export default function Home() {
   const [device, setDevice] = useState<Device>();
   const [call, setCall] = useState<Call>();
-
   const [isMuted, setMuted] = useState<boolean>(false);
   const [statusText, setStatusText] = useState<string>("Loading...");
   const [isMainButtonEnabled, setMainButtonEnabled] = useState<boolean>(false);
   const [phase, setPhase] = useState<Phase>(Phase.Initializing);
   const [hasPermissionError, setPermissionError] = useState(false);
 
-  useEffect(() => {
-    console.log("**I should fire once**");
-  }, []);
-
+  /**
+   *
+   * Get a token and register the device
+   *
+   */
   useEffect(() => {
     console.log("Init Voice Service");
     setStatusText("Initializing");
@@ -39,6 +39,11 @@ export default function Home() {
     });
   }, []);
 
+  /**
+   *
+   * Set UI items based on current state
+   *
+   */
   useEffect(() => {
     console.log(`Current Phase: ${[phase]}`);
     switch (phase) {
@@ -62,6 +67,11 @@ export default function Home() {
     }
   }, [phase]);
 
+  /**
+   *
+   * What should the main button do for each phase
+   *
+   */
   const handleOnMainPress = () => {
     console.log("Main button press, current phase:", phase);
 
@@ -90,6 +100,11 @@ export default function Home() {
     }
   };
 
+  /**
+   *
+   * Handle Device events
+   *
+   */
   const registerDeviceHandlers = (device: Device) => {
     device.on("error", function (error) {
       console.log("Twilio.Device Error: " + error.message);
@@ -101,6 +116,11 @@ export default function Home() {
     });
   };
 
+  /**
+   *
+   * Handle Call events
+   *
+   */
   const registerCallHandler = (call: Call) => {
     call.on("error", (e: any) => {
       if (31401 === e.code) setPermissionError(true);
@@ -130,12 +150,22 @@ export default function Home() {
     });
   };
 
+  /**
+   *
+   * Disconnect handler
+   *
+   */
   const handleDisconnectedIncomingCall = (payload: any) => {
     setPhase(Phase.Ready);
     setStatusText("Disconnected");
     console.log("handleDisconnectedIncomingCall called", payload);
   };
 
+  /**
+   *
+   * The all important mute button
+   *
+   */
   const handleMutePress = () => {
     console.log("Mute pressed");
     if (call) {
