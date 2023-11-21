@@ -1,3 +1,6 @@
+# Ignoring assets are they're built using next app
+src/assets/
+
 # Twilio Serverless
 .twiliodeployinfo
 
