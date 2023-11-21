@@ -3,14 +3,13 @@
 import { CustomizationProvider } from "@twilio-paste/core/customization";
 import CenterLayout from "@/components/CenterLayout";
 import MainWidget from "@/components/MainWidget";
-import DeviceControls from "@/components/DeviceControls";
+
 import DialPad from "@/components/DialPad";
 import VoiceService from "@/services/VoiceService";
 import { useEffect, useState } from "react";
 import { Phase } from "@/types/Phases";
-import { useUserMedia } from "../services/useUserMedia";
 import { Alert, Button } from "@twilio-paste/core";
-import useDevices from "@/services/useDevices";
+
 import { Call, Device } from "@twilio/voice-sdk";
 import CallControls from "@/components/CallControls";
 
@@ -18,36 +17,36 @@ export default function Home() {
   const [device, setDevice] = useState<Device>();
   const [call, setCall] = useState<Call>();
 
-  const [isMute, setMute] = useState<boolean>(false);
+  const [isMuted, setMuted] = useState<boolean>(false);
   const [statusText, setStatusText] = useState<string>("Loading...");
-  const [isMainButtonEnabled, setMainButtonEnabled] = useState<boolean>(true);
-  const { stream, error } = useUserMedia({ audio: true, video: false });
+  const [isMainButtonEnabled, setMainButtonEnabled] = useState<boolean>(false);
   const [phase, setPhase] = useState<Phase>(Phase.Initializing);
-  const { audioInputDevices, audioOutputDevices } = useDevices({
-    camera: false,
-    microphone: true,
-  });
+  const [hasPermissionError, setPermissionError] = useState(false);
 
-  const [speakerDevices, setSpeakerDevices] = useState<Set<MediaDeviceInfo>>();
-  const [ringtoneDevices, setRingtoneDevices] =
-    useState<Set<MediaDeviceInfo>>();
+  useEffect(() => {
+    console.log("**I should fire once**");
+  }, []);
+
+  useEffect(() => {
+    console.log("Init Voice Service");
+    setStatusText("Initializing");
+    VoiceService.init("demo").then((device) => {
+      console.log("Init Voice Service - Done");
+      setDevice(device);
+      registerDeviceHandlers(device);
+      device.register();
+      setPhase(Phase.Ready);
+    });
+  }, []);
 
   useEffect(() => {
     console.log(`Current Phase: ${[phase]}`);
     switch (phase) {
       case Phase.Initializing:
         setMainButtonEnabled(false);
-        console.log("Init Voice Service");
-        VoiceService.init("demo").then((device) => {
-          console.log("Init Voice Service - Done");
-          setStatusText("Press me");
-          setPhase(Phase.Ready);
-          setDevice(device);
-          registerDeviceHandlers(device);
-          device.register();
-        });
 
       case Phase.Ready:
+        setStatusText("Tap to call");
         setMainButtonEnabled(true);
         break;
 
@@ -55,6 +54,7 @@ export default function Home() {
         setStatusText("Dialling...");
         break;
 
+      case Phase.Accepted:
       case Phase.RemoteAudio:
         console.log("Have remote audio");
         setStatusText("Connected");
@@ -63,7 +63,7 @@ export default function Home() {
   }, [phase]);
 
   const handleOnMainPress = () => {
-    console.log("Main button press");
+    console.log("Main button press, current phase:", phase);
 
     switch (phase) {
       case Phase.Initializing:
@@ -80,18 +80,13 @@ export default function Home() {
         setPhase(Phase.Dialling);
         break;
 
+      case Phase.Accepted:
+      case Phase.Ringing:
       case Phase.RemoteAudio:
       case Phase.Dialling:
         console.log("Disconnecting");
         call?.disconnect();
         break;
-    }
-  };
-
-  const updateAllAudioDevices = () => {
-    if (device && device.audio) {
-      setSpeakerDevices(device.audio.speakerDevices?.get());
-      setRingtoneDevices(device.audio.ringtoneDevices?.get());
     }
   };
 
@@ -102,25 +97,30 @@ export default function Home() {
 
     device.on("registered", function () {
       console.log("Device registered");
-      setStatusText("Tap to call");
       setPhase(Phase.Ready);
     });
-
-    if (device.audio) {
-      device.audio.on("deviceChange", updateAllAudioDevices.bind(device));
-    }
   };
 
   const registerCallHandler = (call: Call) => {
     call.on("error", (e: any) => {
+      if (31401 === e.code) setPermissionError(true);
+
       console.log("Call error", e);
+      if (e) console.log(JSON.stringify(e));
       handleDisconnectedIncomingCall(e);
     });
-    call.on("ringing", () => setPhase(Phase.Ringing));
+    call.on("accept", (call) => {
+      setCall(call);
+      setPhase(Phase.Accepted);
+    });
+    call.on("ringing", (hasEarlyMedia) => {
+      console.log("Has early media: ", hasEarlyMedia);
+      setPhase(Phase.Ringing);
+    });
     call.on("audio", () => setPhase(Phase.RemoteAudio));
     call.on("mute", (isMute, call) => {
       console.log("Call mute status now:", isMute);
-      setMute(isMute);
+      setMuted(isMute);
     });
     call.on("cancel", handleDisconnectedIncomingCall);
     call.on("disconnect", handleDisconnectedIncomingCall);
@@ -139,7 +139,7 @@ export default function Home() {
   const handleMutePress = () => {
     console.log("Mute pressed");
     if (call) {
-      call.mute(!isMute);
+      call.mute(!isMuted);
       console.log("Muting call", call);
     }
   };
@@ -147,7 +147,7 @@ export default function Home() {
   return (
     <CustomizationProvider baseTheme="dark">
       <CenterLayout>
-        {error && (
+        {hasPermissionError && (
           <Alert variant="error">
             <strong>Opps </strong>Microphone access is required. Please try
             again{" "}
@@ -164,9 +164,9 @@ export default function Home() {
           />
 
           <CallControls
-            isMuted={isMute}
+            isMuted={isMuted}
             onMutePress={handleMutePress}
-            isEnabled={phase === Phase.RemoteAudio}
+            isEnabled={phase === Phase.Accepted || phase === Phase.RemoteAudio}
           />
         </DialPad>
       </CenterLayout>

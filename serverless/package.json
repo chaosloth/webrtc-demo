@@ -23,6 +23,6 @@
     "typescript": "^5"
   },
   "resolutions": {
-    "wrap-ansi": "9.0.0"
+    "wrap-ansi": "6.0.1"
   }
 }
