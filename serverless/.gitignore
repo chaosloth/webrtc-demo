@@ -4,6 +4,10 @@ src/assets/
 # Twilio Serverless
 .twiliodeployinfo
 
+# ENV
+.env
+.env.local
+
 # Logs
 logs
 *.log
