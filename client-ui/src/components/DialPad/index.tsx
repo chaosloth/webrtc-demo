@@ -1,16 +1,37 @@
 "use client";
 import Image from "next/image";
-import { Box, Card, Heading, Stack } from "@twilio-paste/core";
+import {
+  Box,
+  Card,
+  Heading,
+  Stack,
+  StatusBadge,
+  StatusBadgeVariants,
+} from "@twilio-paste/core";
 import { FC } from "react";
 import logo from "../../../public/logo.svg";
+import { Phase } from "@/types/Phases";
 
 export type DialPadProps = {
   children?: React.ReactNode;
   subheader: string;
-  identity: string;
+  phase: Phase;
 };
 
-const DialPad: FC<DialPadProps> = ({ subheader, identity, children }) => {
+const DialPad: FC<DialPadProps> = ({ subheader, phase, children }) => {
+  const getPhaseBadge = (): StatusBadgeVariants => {
+    switch (phase) {
+      case Phase.Initializing:
+        return "ConnectivityOffline";
+      case Phase.Ready:
+        return "ConnectivityAvailable";
+      case Phase.Accepted:
+        return "ProcessInProgress";
+      default:
+        return "ConnectivityNeutral";
+    }
+  };
+
   return (
     <Card>
       <Stack orientation={"vertical"} spacing={"space40"}>
@@ -25,9 +46,11 @@ const DialPad: FC<DialPadProps> = ({ subheader, identity, children }) => {
             {subheader}
           </Heading>
         )}
-        {identity && (
+        {phase && (
           <Heading as={"div"} variant={"heading40"}>
-            {identity}
+            <StatusBadge variant={getPhaseBadge()} as={"span"}>
+              {phase}
+            </StatusBadge>
           </Heading>
         )}
         <Stack orientation={"vertical"} spacing={"space80"}>

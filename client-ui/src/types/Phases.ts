@@ -5,5 +5,5 @@ export enum Phase {
   Ready = "Ready",
   Ringing = "Ringing",
   RemoteAudio = "Connected",
-  Accepted = "Accepted",
+  Accepted = "Connected",
 }

@@ -16,6 +16,7 @@ import VoiceService from "@/services/VoiceService";
 export default function Home() {
   const [device, setDevice] = useState<Device>();
   const [call, setCall] = useState<Call>();
+  const [callTimer, setCallTimer] = useState(0);
   const [isMuted, setMuted] = useState<boolean>(false);
   const [statusText, setStatusText] = useState<string>("Loading...");
   const [isMainButtonEnabled, setMainButtonEnabled] = useState<boolean>(false);
@@ -63,7 +64,13 @@ export default function Home() {
       case Phase.RemoteAudio:
         console.log("Have remote audio");
         setStatusText("Connected");
-        break;
+        setCallTimer(0);
+        /** Call Timer **/
+        const interval = setInterval(
+          () => setCallTimer((prev) => prev + 1),
+          1000
+        );
+        return () => clearInterval(interval);
     }
   }, [phase]);
 
@@ -137,7 +144,7 @@ export default function Home() {
       console.log("Has early media: ", hasEarlyMedia);
       setPhase(Phase.Ringing);
     });
-    call.on("audio", () => setPhase(Phase.RemoteAudio));
+    // call.on("audio", () => setPhase(Phase.RemoteAudio));
     call.on("mute", (isMute, call) => {
       console.log("Call mute status now:", isMute);
       setMuted(isMute);
@@ -186,8 +193,10 @@ export default function Home() {
             </Button>
           </Alert>
         )}
-        <DialPad subheader={"Real calls over the net"} identity={phase}>
+        <DialPad subheader={"Powered by the SuperNetwork"} phase={phase}>
           <MainWidget
+            isOnCall={phase === Phase.Accepted}
+            timer={callTimer}
             enabled={isMainButtonEnabled}
             status={statusText}
             handlePress={handleOnMainPress}
@@ -196,7 +205,7 @@ export default function Home() {
           <CallControls
             isMuted={isMuted}
             onMutePress={handleMutePress}
-            isEnabled={phase === Phase.Accepted || phase === Phase.RemoteAudio}
+            isEnabled={phase === Phase.Accepted}
           />
         </DialPad>
       </CenterLayout>
