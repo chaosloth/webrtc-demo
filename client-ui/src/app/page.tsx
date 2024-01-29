@@ -52,7 +52,7 @@ export default function Home() {
         setMainButtonEnabled(false);
 
       case Phase.Ready:
-        setStatusText("Tap to call");
+        setStatusText("Tap for 🍕");
         setMainButtonEnabled(true);
         break;
 
@@ -182,7 +182,11 @@ export default function Home() {
   };
 
   return (
-    <CustomizationProvider baseTheme="dark">
+    <CustomizationProvider baseTheme="dark" theme={{
+      backgroundColors: {
+        colorBackgroundBody: "#1c052e",
+      }
+    }}>
       <CenterLayout>
         {hasPermissionError && (
           <Alert variant="error">
@@ -193,7 +197,7 @@ export default function Home() {
             </Button>
           </Alert>
         )}
-        <DialPad subheader={"Powered by the SuperNetwork"} phase={phase}>
+        <DialPad subheader={"Powered by the Twilio SuperNetwork"} phase={phase}>
           <MainWidget
             isOnCall={phase === Phase.Accepted}
             timer={callTimer}

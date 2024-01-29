@@ -36,10 +36,19 @@ const DialPad: FC<DialPadProps> = ({ subheader, phase, children }) => {
     <Card>
       <Stack orientation={"vertical"} spacing={"space40"}>
         <Box alignContent={"center"} justifyContent={"center"} display={"grid"}>
-          <Image src={logo} alt={"Twilio"} />
+          {/* <Image src={logo} alt={"Twilio"} /> */}
+          <div style={{
+            background: "linear-gradient(135deg, #FF726D 5%, #FF4DA9 45%, #CD42D7 85%)",
+            backgroundClip: "text",
+            WebkitBackgroundClip: "transparent",
+            WebkitTextFillColor: "transparent",
+            fontSize: "3em",
+            fontWeight: "bold",
+            lineHeight: "1em"
+          }}>Pizza Bot</div>
         </Box>
         <Heading as={"div"} variant={"heading10"} marginBottom="space0">
-          Web RTC Demo
+          AI Dough Boys
         </Heading>
         {subheader && (
           <Heading as={"div"} variant={"heading40"} marginBottom="space0">
@@ -57,6 +66,7 @@ const DialPad: FC<DialPadProps> = ({ subheader, phase, children }) => {
           {children}
         </Stack>
       </Stack>
+
     </Card>
   );
 };
