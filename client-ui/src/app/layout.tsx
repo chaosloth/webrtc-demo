@@ -5,7 +5,7 @@ import "@/app/styles.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Twilio WebRTC",
+  title: "Bali Demo 2",
   description: "Communications at scale",
 };
 

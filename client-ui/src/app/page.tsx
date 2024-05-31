@@ -13,6 +13,8 @@ import MainWidget from "@/components/MainWidget";
 import DialPad from "@/components/DialPad";
 import VoiceService from "@/services/VoiceService";
 
+import { generateSlug } from "random-word-slugs";
+
 export default function Home() {
   const [device, setDevice] = useState<Device>();
   const [call, setCall] = useState<Call>();
@@ -23,6 +25,15 @@ export default function Home() {
   const [phase, setPhase] = useState<Phase>(Phase.Initializing);
   const [hasPermissionError, setPermissionError] = useState(false);
 
+  const getOrGenerateUserId = () => {
+    let userId = localStorage.getItem("userId");
+    if (!userId || userId === "") {
+      userId = generateSlug();
+      localStorage.setItem("userId", userId);
+    }
+
+    return userId;
+  };
   /**
    *
    * Get a token and register the device
@@ -31,7 +42,7 @@ export default function Home() {
   useEffect(() => {
     console.log("Init Voice Service");
     setStatusText("Initializing");
-    VoiceService.init("demo").then((device) => {
+    VoiceService.init(getOrGenerateUserId()).then((device) => {
       console.log("Init Voice Service - Done");
       setDevice(device);
       registerDeviceHandlers(device);
@@ -52,7 +63,7 @@ export default function Home() {
         setMainButtonEnabled(false);
 
       case Phase.Ready:
-        setStatusText("Tap for 🍕");
+        setStatusText("Tap for 🌴");
         setMainButtonEnabled(true);
         break;
 
@@ -182,11 +193,14 @@ export default function Home() {
   };
 
   return (
-    <CustomizationProvider baseTheme="dark" theme={{
-      backgroundColors: {
-        colorBackgroundBody: "#1c052e",
-      }
-    }}>
+    <CustomizationProvider
+      baseTheme="dark"
+      theme={{
+        backgroundColors: {
+          colorBackgroundBody: "#1c052e",
+        },
+      }}
+    >
       <CenterLayout>
         {hasPermissionError && (
           <Alert variant="error">

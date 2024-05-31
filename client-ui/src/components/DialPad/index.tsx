@@ -1,5 +1,4 @@
 "use client";
-import Image from "next/image";
 import {
   Box,
   Card,
@@ -9,7 +8,6 @@ import {
   StatusBadgeVariants,
 } from "@twilio-paste/core";
 import { FC } from "react";
-import logo from "../../../public/logo.svg";
 import { Phase } from "@/types/Phases";
 
 export type DialPadProps = {
@@ -37,18 +35,23 @@ const DialPad: FC<DialPadProps> = ({ subheader, phase, children }) => {
       <Stack orientation={"vertical"} spacing={"space40"}>
         <Box alignContent={"center"} justifyContent={"center"} display={"grid"}>
           {/* <Image src={logo} alt={"Twilio"} /> */}
-          <div style={{
-            background: "linear-gradient(135deg, #FF726D 5%, #FF4DA9 45%, #CD42D7 85%)",
-            backgroundClip: "text",
-            WebkitBackgroundClip: "transparent",
-            WebkitTextFillColor: "transparent",
-            fontSize: "3em",
-            fontWeight: "bold",
-            lineHeight: "1em"
-          }}>Pizza Bot</div>
+          <div
+            style={{
+              background:
+                "linear-gradient(135deg, #FF726D 5%, #FF4DA9 45%, #CD42D7 85%)",
+              backgroundClip: "text",
+              WebkitBackgroundClip: "transparent",
+              WebkitTextFillColor: "transparent",
+              fontSize: "2.5em",
+              fontWeight: "bold",
+              lineHeight: "1em",
+            }}
+          >
+            Voice Intelligence
+          </div>
         </Box>
-        <Heading as={"div"} variant={"heading10"} marginBottom="space0">
-          AI Dough Boys
+        <Heading as={"div"} variant={"heading20"} marginBottom="space0">
+          Just even more awesome!
         </Heading>
         {subheader && (
           <Heading as={"div"} variant={"heading40"} marginBottom="space0">
@@ -66,7 +69,6 @@ const DialPad: FC<DialPadProps> = ({ subheader, phase, children }) => {
           {children}
         </Stack>
       </Stack>
-
     </Card>
   );
 };
