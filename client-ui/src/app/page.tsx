@@ -22,7 +22,6 @@ export default function Home() {
   const [isMainButtonEnabled, setMainButtonEnabled] = useState<boolean>(false);
   const [phase, setPhase] = useState<Phase>(Phase.Initializing);
   const [hasPermissionError, setPermissionError] = useState(false);
-
   /**
    *
    * Get a token and register the device
@@ -31,7 +30,13 @@ export default function Home() {
   useEffect(() => {
     console.log("Init Voice Service");
     setStatusText("Initializing");
-    VoiceService.init("demo").then((device) => {
+    // Parse user_id query parameter (optional)
+    const searchParams = new URLSearchParams(document.location.search);
+    let defaultUserId = "demo";
+    if (searchParams.get("user_id")) {
+      defaultUserId = searchParams.get("user_id") || "demo";
+    }
+    VoiceService.init(defaultUserId).then((device) => {
       console.log("Init Voice Service - Done");
       setDevice(device);
       registerDeviceHandlers(device);
