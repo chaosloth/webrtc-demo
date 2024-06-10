@@ -49,11 +49,11 @@ const DialPad: FC<DialPadProps> = ({ subheader, phase, children }) => {
               lineHeight: "1em",
             }}
           >
-            ${process.env.NEXT_PUBLIC_TITLE || "Click to call"}
+            {process.env.NEXT_PUBLIC_TITLE || "Click to call"}
           </div>
         </Box>
         <Heading as={"div"} variant={"heading10"} marginBottom="space0">
-          ${process.env.NEXT_PUBLIC_SUBTITLE || "Web RTC"}
+          {process.env.NEXT_PUBLIC_SUBTITLE || "Web RTC"}
         </Heading>
         {subheader && (
           <Heading as={"div"} variant={"heading40"} marginBottom="space0">
