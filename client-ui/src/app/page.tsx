@@ -4,6 +4,7 @@ import { Call, Device } from "@twilio/voice-sdk";
 import { CustomizationProvider } from "@twilio-paste/core/customization";
 import { Alert, Button } from "@twilio-paste/core";
 import { useEffect, useState } from "react";
+import { generateSlug } from "random-word-slugs";
 
 import { Phase } from "@/types/Phases";
 
@@ -30,9 +31,12 @@ export default function Home() {
   useEffect(() => {
     console.log("Init Voice Service");
     setStatusText("Initializing");
+
+    // Get client ID from local storage or generate new one
+    let defaultUserId = localStorage.getItem("userId") || generateSlug();
+    localStorage.setItem("userId", defaultUserId);
     // Parse user_id query parameter (optional)
     const searchParams = new URLSearchParams(document.location.search);
-    let defaultUserId = "demo";
     if (searchParams.get("user_id")) {
       defaultUserId = searchParams.get("user_id") || "demo";
     }
@@ -57,7 +61,7 @@ export default function Home() {
         setMainButtonEnabled(false);
 
       case Phase.Ready:
-        setStatusText("Tap to call");
+        setStatusText("Tap for 🍕");
         setMainButtonEnabled(true);
         break;
 
@@ -187,7 +191,14 @@ export default function Home() {
   };
 
   return (
-    <CustomizationProvider baseTheme="dark">
+    <CustomizationProvider
+      baseTheme="dark"
+      theme={{
+        backgroundColors: {
+          colorBackgroundBody: "#1c052e",
+        },
+      }}
+    >
       <CenterLayout>
         {hasPermissionError && (
           <Alert variant="error">
@@ -198,7 +209,7 @@ export default function Home() {
             </Button>
           </Alert>
         )}
-        <DialPad subheader={"Powered by the SuperNetwork"} phase={phase}>
+        <DialPad subheader={"Powered by the Twilio SuperNetwork"} phase={phase}>
           <MainWidget
             isOnCall={phase === Phase.Accepted}
             timer={callTimer}

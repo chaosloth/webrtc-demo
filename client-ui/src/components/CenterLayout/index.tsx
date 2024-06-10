@@ -1,7 +1,6 @@
 "use client";
 
 import { Flex, Box } from "@twilio-paste/core";
-import styles from "./styles.module.css";
 import { FC } from "react";
 
 export type CenterLayoutProps = {
