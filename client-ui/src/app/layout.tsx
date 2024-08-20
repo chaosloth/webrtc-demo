@@ -20,6 +20,7 @@ export default function RootLayout({
         <meta property="og:url" content="https://twilio.com" />
         <meta property="og:type" content="website" />
         <meta property="og:title" content="Twilio - The Future with Twilio!" />
+        <link rel="icon" type="image/png" href="favicon-32x32.png" />
         <meta
           property="og:description"
           content="Connect with customers on their preferred channels—anywhere in the world. Quickly integrate powerful communication APIs to start building solutions for SMS and WhatsApp messaging, voice, video, and email."

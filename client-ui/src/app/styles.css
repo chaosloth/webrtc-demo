@@ -3,4 +3,7 @@ body {
     background-position: 0 0, 25px 25px;
     background-size: 25px 25px;
 
+    background-image: radial-gradient(rgba(89, 255, 0, 0.1) 8px, transparent 8px), radial-gradient(rgba(3, 159, 255, 0.1) 8px, transparent 8px);
+    background-size: calc(40 * 1px) calc(40 * 1px);
+    background-position: 0 0, calc(20 * 5px) calc(20 * 5px)
 }

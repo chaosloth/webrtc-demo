@@ -61,7 +61,7 @@ export default function Home() {
         setMainButtonEnabled(false);
 
       case Phase.Ready:
-        setStatusText("Tap for 🍕");
+        setStatusText("Tap for 🤖");
         setMainButtonEnabled(true);
         break;
 
@@ -209,7 +209,10 @@ export default function Home() {
             </Button>
           </Alert>
         )}
-        <DialPad subheader={"Powered by the Twilio SuperNetwork"} phase={phase}>
+        <DialPad
+          subheader={process.env.NEXT_PUBLIC_UI_TAGLINE || ""}
+          phase={phase}
+        >
           <MainWidget
             isOnCall={phase === Phase.Accepted}
             timer={callTimer}

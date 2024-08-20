@@ -33,45 +33,58 @@ const DialPad: FC<DialPadProps> = ({ subheader, phase, children }) => {
   };
 
   return (
-    <Card>
-      <Stack orientation={"vertical"} spacing={"space40"}>
-        <Box alignContent={"center"} justifyContent={"center"} display={"grid"}>
-          {/* <Image src={logo} alt={"Twilio"} /> */}
-          <div
-            style={{
-              background:
-                "linear-gradient(135deg, #FF726D 5%, #FF4DA9 45%, #CD42D7 85%)",
-              backgroundClip: "text",
-              WebkitBackgroundClip: "transparent",
-              WebkitTextFillColor: "transparent",
-              fontSize: "3em",
-              fontWeight: "bold",
-              lineHeight: "1em",
-            }}
+    <Box
+      style={{
+        borderRadius: "8px",
+        padding: "2px",
+        background:
+          "linear-gradient(90deg, rgba(89,255,0,1) 0%, rgba(3,159,255,1) 99%)",
+      }}
+    >
+      <Card>
+        <Stack orientation={"vertical"} spacing={"space40"}>
+          <Box
+            alignContent={"center"}
+            justifyContent={"center"}
+            display={"grid"}
           >
-            {process.env.NEXT_PUBLIC_TITLE || "Click to call"}
-          </div>
-        </Box>
-        <Heading as={"div"} variant={"heading10"} marginBottom="space0">
-          {process.env.NEXT_PUBLIC_SUBTITLE || "Web RTC"}
-        </Heading>
-        {subheader && (
-          <Heading as={"div"} variant={"heading40"} marginBottom="space0">
-            {subheader}
+            {/* <Image src={logo} alt={"Twilio"} /> */}
+            <div
+              style={{
+                background:
+                  "linear-gradient(90deg, rgba(89,255,0,1) 0%, rgba(3,159,255,1) 99%)",
+                backgroundClip: "text",
+                WebkitBackgroundClip: "transparent",
+                WebkitTextFillColor: "transparent",
+                fontSize: "3em",
+                fontWeight: "bold",
+                lineHeight: "1em",
+              }}
+            >
+              {process.env.NEXT_PUBLIC_UI_TITLE || "Click to call"}
+            </div>
+          </Box>
+          <Heading as={"div"} variant={"heading20"} marginBottom="space0">
+            {process.env.NEXT_PUBLIC_UI_SUBTITLE || "Web RTC"}
           </Heading>
-        )}
-        {phase && (
-          <Heading as={"div"} variant={"heading40"}>
-            <StatusBadge variant={getPhaseBadge()} as={"span"}>
-              {phase}
-            </StatusBadge>
-          </Heading>
-        )}
-        <Stack orientation={"vertical"} spacing={"space80"}>
-          {children}
+          {subheader && (
+            <Heading as={"div"} variant={"heading40"} marginBottom="space0">
+              {subheader}
+            </Heading>
+          )}
+          {phase && (
+            <Heading as={"div"} variant={"heading40"}>
+              <StatusBadge variant={getPhaseBadge()} as={"span"}>
+                {phase}
+              </StatusBadge>
+            </Heading>
+          )}
+          <Stack orientation={"vertical"} spacing={"space80"}>
+            {children}
+          </Stack>
         </Stack>
-      </Stack>
-    </Card>
+      </Card>
+    </Box>
   );
 };
 
